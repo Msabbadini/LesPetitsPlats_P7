@@ -271,7 +271,7 @@ header {
   cursor: pointer;
 }
 .dropbtn input {
-  width: calc(100% - 10px);
+  width: calc(100% - 50px);
   height: auto;
   padding: 5px 5px;
   background: transparent;

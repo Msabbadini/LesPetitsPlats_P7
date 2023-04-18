@@ -11,11 +11,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <!--    Partie JS   -->
     <script defer src="./scripts/utils/filter.js" type="module"></script>
-    <script>
-      function myFunc(x) {
-        console.log("-> " + x);
-      }
-    </script>
   </head>
   <body>
     <header>
@@ -69,6 +64,7 @@
         <div id="tagA" class="drop_list drop_list--A">
           <button id="tagA--title" class="dropbtn drop_list--A">
             <input type="text" placeholder="Appareils" id="input-A" value="" />
+            <span id="tagDropA"> > </span>
           </button>
           <div
             id="dropDown-A"

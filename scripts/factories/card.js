@@ -12,18 +12,23 @@ export default class Card {
     this.data = data;
     this.container = document.querySelector(".card_container");
     this.template = document.querySelector("#card_recipe");
-    this.card = this.template.content.cloneNode(true);
-    this.titleCard = this.card.querySelector(".card_content_header_title");
-    this.timeCard = this.card.querySelector(".card_content_header_time_text");
-    this.listeCard = this.card.querySelector(".card_content_body_liste");
-    this.instructionCard = this.card.querySelector(
+    this.fragment = this.template.content.cloneNode(true);
+    this.element = this.fragment.querySelector(".card");
+    this.titleCard = this.element.querySelector(".card_content_header_title");
+    this.timeCard = this.element.querySelector(
+      ".card_content_header_time_text"
+    );
+    this.listeCard = this.element.querySelector(".card_content_body_liste");
+    this.instructionCard = this.element.querySelector(
       ".card_content_body_instruction"
     );
 
     this.render();
+
+    this.data.card = this;
   }
 
-  getUnity = (param) =>
+  getUnit = (param) =>
     rep_words.reduce((p, kv) => p.replace(kv.key, kv.value), param);
 
   setListIngredient = (item) => {
@@ -36,7 +41,7 @@ export default class Card {
     span.appendChild(strong);
 
     p.textContent = `${item.quantity ? `: ${item.quantity}` : ""} ${
-      item.unit ? this.getUnity(item.unit) : ""
+      item.unit ? this.getUnit(item.unit) : ""
     }`;
     span.appendChild(p);
     return span;
@@ -65,6 +70,6 @@ export default class Card {
     }
     this.instructionCard.textContent = desc;
 
-    this.container.appendChild(this.card);
+    this.container.appendChild(this.fragment);
   };
 }
