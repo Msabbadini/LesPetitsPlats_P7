@@ -33,32 +33,17 @@ const Factory = {
      */
     tag: (type, text, onclick, ...rest) => {
         text = text.toLowerCase();
-        const item = { type: type, name: text };
         const tag = document.createElement("span");
+        tag.textContent = text;
 
         tag.type = type;
         tag.name = text;
-        tag.textContent = text;
-        const typeClass = type.toUpperCase();
-        tag.classList.add("tag", "drop_list--" + typeClass);
+
+        tag.classList.add("tag", "drop_list--" + type.toUpperCase());
 
         tag.onclick = () => onclick && onclick(tag, ...rest);
 
         return tag;
-        /*
-    const div = document.querySelector(".tags");
-    tag.onclick = () => {
-      element.classList.remove("hide");
-      div.removeChild(tag);
-      // filter...
-      tags_all.splice(tags_all.indexOf(item), 1);
-      filterAndRenderTags();
-    };
-    div.appendChild(tag);
-    // filter...
-    tags_all.push(item);
-    filterAndRenderTags();
-    */
     },
 };
 
@@ -68,15 +53,11 @@ const Renderer = {
         activeRecipes.map((r) => r.card.element.classList.remove("hide"));
     },
 
-    tags: (tags, activeTags) => {
-        tags.map((t) => t.hide());
-        activeTags.map((t) => t.show());
-    },
-
-    items: (container, text) => {
-        const value = text.trim().toLowerCase();
+    listItems: (container, availableItems) => {
+        console.log(availableItems);
         container.querySelectorAll("span").forEach((f) => {
-            f.style.display = f.textContent.toLowerCase().includes(value)
+            const t = f.textContent.toLowerCase();
+            f.style.display = availableItems.find((i) => t === i.name)
                 ? "inline"
                 : "none";
         });
@@ -103,6 +84,7 @@ const Update = {
                     const filterFunction = filterFunctions.get(
                         tag.type.toLowerCase()
                     );
+
                     return filterFunction && filterFunction(tag.name, recipe)
                         ? true
                         : false;
@@ -110,7 +92,31 @@ const Update = {
         );
     },
 
-    tag: () => {},
+    listTagsA: (filteredList, array) => {
+        // update de liste
+        const list = new Set();
+        filteredList.map((a) => list.add(a.appliance.toLowerCase()));
+        console.log("list", list);
+        list.forEach((a) => array.push({ name: a, type: "a" }));
+    },
+    listTagsU: (filteredList, array) => {
+        const list = new Set();
+        filteredList.map((r) =>
+            r.ustensils.map((u) => list.add(u.toLowerCase()))
+        );
+        list.forEach((u) => array.push({ name: u, type: "u" }));
+    },
+    listTagsI: (filteredList, array) => {
+        const list = new Set();
+        filteredList.map((r) =>
+            r.ingredients.map((i) => list.add(i.ingredient.toLowerCase()))
+        );
+        list.forEach((i) => array.push({ name: i, type: "i" }));
+    },
+    filterItemsByText: (listItems, text) => {
+        const t = text.toLowerCase();
+        return listItems.filter((i) => i.name.includes(t));
+    },
 };
 
 export class Filter {
@@ -124,6 +130,12 @@ export class Filter {
         this.itemsI = [];
         this.itemsU = [];
         this.itemsA = [];
+        this.availableItemsA = [];
+        this.availableItemsU = [];
+        this.availableItemsI = [];
+        this.activeItemsA = [];
+        this.activeItemsU = [];
+        this.activeItemsI = [];
 
         this.placeholders = {
             I: ["Ingrédients", "Recherche un ingrédient"],
@@ -132,6 +144,9 @@ export class Filter {
         };
 
         this._filterText = "";
+        this._filterTextI = "";
+        this._filterTextA = "";
+        this._filterTextU = "";
         this.update = Update;
         this.factory = Factory;
         this.renderer = Renderer;
@@ -157,10 +172,63 @@ export class Filter {
         }
     }
 
+    get filterTextI() {
+        return this._filterTextI;
+    }
+    get filterTextA() {
+        return this._filterTextA;
+    }
+    get filterTextU() {
+        return this._filterTextU;
+    }
+
+    set filterTextI(text) {
+        const old = this._filterTextI;
+        this._filterTextI = text;
+        if (old !== this._filterTextI) {
+            this.activeItemsI = this.update.filterItemsByText(
+                this.availableItemsI,
+                this._filterTextI
+            );
+            this.renderer.listItems(
+                document.getElementById(`dropDown-I`),
+                this.activeItemsI
+            );
+        }
+    }
+    set filterTextA(text) {
+        const old = this._filterTextA;
+        this._filterTextA = text;
+        if (old !== this._filterTextA) {
+            this.activeItemsA = this.update.filterItemsByText(
+                this.availableItemsA,
+                this._filterTextA
+            );
+            this.renderer.listItems(
+                document.getElementById(`dropDown-A`),
+                this.activeItemsA
+            );
+        }
+    }
+    set filterTextU(text) {
+        const old = this._filterTextU;
+        this._filterTextU = text;
+        if (old !== this._filterTextU) {
+            this.activeItemsU = this.update.filterItemsByText(
+                this.availableItemsU,
+                this._filterTextU
+            );
+            this.renderer.listItems(
+                document.getElementById(`dropDown-U`),
+                this.activeItemsU
+            );
+        }
+    }
+
     init() {
         this.factory.recipes(this.originals);
 
-        // Ajout des différents filters dans la map
+        // #region - Ajout des différents filters dans la map
         // Fonction filter ingrédient pour trier selon le tableau des tags
         this.filterFunctions.set("i", (tagName, recipe) =>
             recipe.ingredients.find(
@@ -178,25 +246,22 @@ export class Filter {
             "a",
             (tagName, recipe) => recipe.appliance.toLowerCase() === tagName
         );
+        // #endregion
 
+        // #region - generate items' lists
         // generate list of items for ingredients
-        const list = new Set();
-        this.originals.map((r) =>
-            r.ingredients.map((i) => list.add(i.ingredient.toLowerCase()))
-        );
-        list.forEach((i) => this.itemsI.push({ name: i, type: "i" }));
-
+        this.update.listTagsI(this.originals, this.itemsI);
         // generate list of items for appliances
-        list.clear();
-        this.originals.map((a) => list.add(a.appliance.toLowerCase()));
-        list.forEach((a) => this.itemsA.push({ name: a, type: "a" }));
-
+        this.update.listTagsA(this.originals, this.itemsA);
         // generate list of items for utensils
-        list.clear();
-        this.originals.map((r) =>
-            r.ustensils.map((u) => list.add(u.toLowerCase()))
-        );
-        list.forEach((u) => this.itemsU.push({ name: u, type: "u" }));
+        this.update.listTagsU(this.originals, this.itemsU);
+        this.availableItemsI = [...this.itemsI];
+        this.availableItemsA = [...this.itemsA];
+        this.availableItemsU = [...this.itemsU];
+        this.activeItemsI = [...this.itemsI];
+        this.activeItemsA = [...this.itemsA];
+        this.activeItemsU = [...this.itemsU];
+        // #endregion
 
         const that = this;
         const tagsElement = document.querySelector(".tags");
@@ -240,7 +305,8 @@ export class Filter {
             onClickItemElement
         );
 
-        this.renderer.recipes(this.originals, this.originals);
+        this.filteredList = [...this.originals];
+        this.render();
     }
 
     filter() {
@@ -248,13 +314,64 @@ export class Filter {
             this.originals,
             this._filterText
         );
+
         this.filteredList = this.update.byTags(
             this.filterFunctions,
             this.filteredList,
             this.tags
         );
+
+        this.availableItemsI.length = 0;
+        this.availableItemsU.length = 0;
+        this.availableItemsA.length = 0;
+
+        this.update.listTagsI(this.filteredList, this.availableItemsI);
+        this.update.listTagsU(this.filteredList, this.availableItemsU);
+        this.update.listTagsA(this.filteredList, this.availableItemsA);
+
+        this.activeItemsI = this.update.filterItemsByText(
+            this.availableItemsI,
+            this._filterTextI
+        );
+        this.activeItemsU = this.update.filterItemsByText(
+            this.availableItemsU,
+            this._filterTextU
+        );
+        this.activeItemsA = this.update.filterItemsByText(
+            this.availableItemsA,
+            this._filterTextA
+        );
+        console.log(this.tags);
+        this.activeItemsI = this._filterActiveTag(this.activeItemsI);
+        this.activeItemsU = this._filterActiveTag(this.activeItemsU);
+        this.activeItemsA = this._filterActiveTag(this.activeItemsA);
+
+        this.render();
+    }
+
+    _filterActiveTag(activeItems) {
+        console.log("filter remove tags", this.tags);
+        return activeItems.filter(
+            (i) =>
+                !this.tags.find((t) => t.type === i.type && t.name === i.name)
+        );
+    }
+
+    render() {
+        this.renderer.listItems(
+            document.querySelector("#dropDown-A"),
+            this.activeItemsA
+        );
+        this.renderer.listItems(
+            document.querySelector("#dropDown-I"),
+            this.activeItemsI
+        );
+        this.renderer.listItems(
+            document.querySelector("#dropDown-U"),
+            this.activeItemsU
+        );
+
         this.renderer.recipes(this.originals, this.filteredList);
-        // this.renderer.items();
     }
 }
 
@@ -268,92 +385,45 @@ function enableFilterItems(filter, type) {
         document.getElementById(`dropDown-${i}`).classList.remove("show");
     });
     const div = document.getElementById(`tag${type}`);
-    div.classList.add("active");
-    const input = div.querySelector(`input`);
-    input.placeholder = filter.placeholders[type][1];
-    document.getElementById(`dropDown-${type}`).classList.add("show");
+    if (div.classList.contains("active")) {
+        console.log(" active");
+        div.classList.remove("active");
+        const input = div.querySelector(`input`);
+        input.placeholder = filter.placeholders[type][0];
+        document.getElementById(`dropDown-${type}`).classList.remove("show");
+    } else {
+        console.log("not active");
+        div.classList.add("active");
+        const input = div.querySelector(`input`);
+        input.placeholder = filter.placeholders[type][1];
+        document.getElementById(`dropDown-${type}`).classList.add("show");
+    }
+    document.querySelector(".hidder").style.display = "block";
 }
 
-// #region
-// const renderTagLists = () => {
-//     renderTagList(TAGS_I, document.querySelector("#dropDown-I"));
-//     renderTagList(TAGS_U, document.querySelector("#dropDown-U"));
-//     renderTagList(TAGS_A, document.querySelector("#dropDown-A"));
-// };
-
-// const renderTagList = (tagList, container) => {
-//     container.innerHTML = "";
-//     for (let tag of tagList.values()) {
-//         const span = document.createElement("span");
-//         span.textContent = tag.name;
-//         span.setAttribute("itemtype", tag.type);
-//         span.classList.add("dropDown--item");
-//         container.appendChild(span);
-//         span.onclick = (e) => {
-//             span.classList.add("hide");
-//             createTag(span, span.textContent, tag.type);
-//         };
-//     }
-// };
-
-// const createTag = (element, t, type, recipes) => {
-//     const item = { type: type, name: t.toLowerCase() };
-//     const div = document.querySelector(".tags");
-//     const tag = document.createElement("span");
-//     tag.textContent = t;
-//     const typeClass = type.toUpperCase();
-//     tag.classList.add("tag", "drop_list--" + typeClass);
-//     tag.onclick = () => {
-//         element.classList.remove("hide");
-//         div.removeChild(tag);
-//         // filter...
-//         tags_all.splice(tags_all.indexOf(item), 1);
-//         filterAndRenderTags();
-//     };
-//     div.appendChild(tag);
-//     // filter...
-//     tags_all.push(item);
-//     filterAndRenderTags();
-// };
-
-// const filterAndRenderTags = () => {
-//     const filteredListByTag = FilterLogic.byTags(filteredList, tags_all);
-//     renderCards(filteredListByTag);
-// };
-
-// const removeActive = (i) => {
-//     console.log("test");
-//     const div = document.getElementById(`tag${i}`);
-//     div.classList.remove("active");
-//     document.getElementById(`dropDown-${i}`).classList.remove("show");
-// };
-// #endregion
+function disableFilterItems(filter) {
+    ["I", "A", "U"].map((i) => {
+        const div = document.getElementById(`tag${i}`);
+        div.classList.remove("active");
+        const input = div.querySelector(`input`);
+        input.placeholder = filter.placeholders[i][0];
+        document.getElementById(`dropDown-${i}`).classList.remove("show");
+    });
+    document.querySelector(".hidder").style.display = "none";
+}
 
 window.onload = async () => {
-    const searchInput = document.querySelector("#search");
-    const tagI = document.querySelector("#tagI--title");
-    const tagA = document.querySelector("#tagA--title");
-    const tagU = document.querySelector("#tagU--title");
-    const dropA = document.querySelector("#tagDropA");
-
     const filter = new Filter(await api());
     filter.init();
 
-    // filteredList = originals;
-    // createCards(originals);
-    // FilterLogic.listTags(originals);
+    const searchInput = document.querySelector("#search");
 
-    // function filterInput() {
-    //     filter.filterText = searchInput.value
-    //     // filteredList =
-    //     //     searchInput.value.length > 2
-    //     //         ? FilterLogic.byText(originals, searchInput.value)
-    //     //         : originals;
-    //     // filter.renderer.recipes(filter.originals, filter.filteredList);
-    //     // renderTagLists();
-    // }
+    const hideDropdowns = document.querySelector(".hidder");
+    disableFilterItems(filter);
 
-    // filterInput();
+    const tagI = document.querySelector("#tagI--title");
+    const tagA = document.querySelector("#tagA--title");
+    const tagU = document.querySelector("#tagU--title");
 
     // EventListener Input
 
@@ -361,29 +431,20 @@ window.onload = async () => {
     tagA.addEventListener("click", (e) => enableFilterItems(filter, "A"));
     tagU.addEventListener("click", (e) => enableFilterItems(filter, "U"));
 
-    // dropA.addEventListener("click", (e) => removeActive("A"));
+    hideDropdowns.addEventListener("click", (e) => disableFilterItems(filter));
 
     // oninput : Filters items in dropdown menus
-    tagI.addEventListener("input", (e) =>
-        filter.renderer.items(
-            document.getElementById(`dropDown-I`),
-            e.target.value
-        )
-    );
+    tagI.addEventListener("input", (e) => {
+        filter.filterTextI = e.target.value.toLowerCase();
+    });
 
-    tagA.addEventListener("input", (e) =>
-        filter.renderer.items(
-            document.getElementById(`dropDown-A`),
-            e.target.value
-        )
-    );
+    tagA.addEventListener("input", (e) => {
+        filter.filterTextA = e.target.value.toLowerCase();
+    });
 
-    tagU.addEventListener("input", (e) =>
-        filter.renderer.items(
-            document.getElementById(`dropDown-U`),
-            e.target.value
-        )
-    );
+    tagU.addEventListener("input", (e) => {
+        filter.filterTextU = e.target.value.toLowerCase();
+    });
 
     searchInput.addEventListener(
         "input",
