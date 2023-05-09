@@ -341,7 +341,7 @@ export class Filter {
             this.availableItemsA,
             this._filterTextA
         );
-        console.log(this.tags);
+
         this.activeItemsI = this._filterActiveTag(this.activeItemsI);
         this.activeItemsU = this._filterActiveTag(this.activeItemsU);
         this.activeItemsA = this._filterActiveTag(this.activeItemsA);
