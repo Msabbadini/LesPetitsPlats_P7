@@ -1,0 +1,397 @@
+/*  Font DM Sans pour le header */
+/*  Font Lato pour le content et les modules de recherches  */
+/*  Font Roboto pour les instructions de recette*/
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans&family=Lato&display=swap");
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: start;
+    align-items: start;
+}
+
+body {
+    max-width: 1440px;
+    padding: 0 5%;
+    margin: 0 auto;
+    min-height: 100dvh;
+    font-family: "Lato", sans-serif;
+}
+
+/*  Partie Header   */
+header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 42px 0;
+}
+
+.header_title {
+    font-family: "DM Sans", sans-serif;
+    text-align: center;
+    color: #d04f4f;
+}
+
+.header_logo {
+    width: 50px;
+}
+
+/*  partie search bar   */
+
+.search_bar {
+    flex: 1;
+    height: 70px;
+    width: 100%;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+#search {
+    display: block;
+    height: 100%;
+    width: 100%;
+    padding: 12px 24px;
+    background-color: #e7e7e7;
+    /* ff -> 255 hexadecimal 0-16 0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f
+        0,1,2,3,4,5,6,7,8,9, 10
+        0,1,2,3,4,5,6,7,8,9,a,b, 10
+        0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f, 10
+
+        15 -> f
+        16 -> 10
+        17 -> 11
+        31 -> 1f : 1*16 + 15 = 31
+        32 -> 20
+        255 -> ff
+        127 -> 7f
+        128 -> 80
+     */
+    border: none;
+    border-radius: 5px;
+}
+#search::placeholder {
+    color: #adadad;
+}
+
+.search_bar .search_logo_container {
+    display: flex;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 50px;
+    align-items: center;
+    justify-content: center;
+}
+.search_logo_container .search_logo {
+    height: 32px;
+    width: 32px;
+}
+
+/*  Section card    */
+.card_container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 50px 2%;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    height: 370px;
+    width: clamp(250px, 32%, 380px);
+}
+
+.card .card_img {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 50px;
+    width: 100%;
+    height: 178px;
+    background-color: #c7bebe;
+    border-radius: 5px 5px 0 0;
+}
+
+.card .card_content {
+    height: 190px;
+    width: 100%;
+    padding: 15px;
+    background-color: #e7e7e7;
+    border-radius: 0 0 5px 5px;
+}
+
+.card_content .card_content_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: "Lato", sans-serif;
+    margin-bottom: 20px;
+}
+
+.card_content .card_content_header_title {
+    font-size: clamp(12px, 1.2vw, 18px);
+    font-weight: 400;
+    line-height: 21px;
+    font-style: normal;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 70%;
+}
+
+.card_content_header_time {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    width: 30%;
+}
+
+.card_content_header_time img {
+    width: 20px;
+    height: 20px;
+    color: #000000;
+}
+
+.card_content_header_time p {
+    font-size: clamp(12px, 1.2vw, 18px);
+    font-weight: 700;
+    line-height: 22px;
+    font-style: normal;
+}
+
+.card_content .card_content_body {
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+
+.card_content .card_content_body_liste {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    height: 80%;
+    font-size: clamp(10px, 0.9vw, 12px);
+    line-height: 14px;
+}
+.card_content_body_liste .ingredient {
+    max-width: 140px;
+    font-weight: 700;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.list_inline {
+    display: flex;
+}
+
+.card_content_body_instruction {
+    max-width: 50%;
+    height: 80%;
+    font-size: clamp(10px, 0.9vw, 12px);
+    font-weight: 400;
+    font-style: normal;
+    line-height: 12px;
+    overflow: hidden;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 1rem;
+}
+
+.tags .tag {
+    display: flex ;
+    align-items: center;
+    min-width: 107px;
+    min-height: 40px;
+    padding: 5px 2px 5px 10px;
+    /* border: 1px solid black; */
+    color: white;
+    border-radius: 5px;
+}
+.tags .tag img {
+    padding: 2px;
+    margin-left: 10px;
+}
+/*  Section Dropdown Tags   */
+.search_tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2%;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 3%;
+}
+.drop_list {
+    position: relative;
+    display: inline-block;
+    width: 22%;
+    border-radius: 5px;
+}
+.drop_list.active {
+    width: 52%;
+    border-radius: 5px 5px 0 0;
+}
+
+.drop_list.active .dropDown--content{
+    
+    border-radius:  0 0 5px 5px;
+}
+
+.drop_list--I {
+    background-color: #3282f7;
+}
+.drop_list--U {
+    background-color: #68d9a4;
+}
+.drop_list--A {
+    background-color: #ed6454;
+}
+
+
+
+#tagI.active #tagDropI {
+    transition: transform 0.3s ease;
+    transform: rotate(-180deg); /* Rotation vers le haut si la classe "active" est présente */
+}
+
+
+#tagA.active #tagDropA {
+    transition: transform 0.3s ease;
+    transform: rotate(-180deg); /* Rotation vers le haut si la classe "active" est présente */
+}
+
+
+#tagU.active #tagDropU {
+    transition: transform 0.3s ease;
+    transform: rotate(-180deg); /* Rotation vers le haut si la classe "active" est présente */
+}
+
+
+/* Dropdown Button */
+.dropbtn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+    padding: 16px;
+    height: 70px;
+    width: 100%;
+    border-radius: 5px;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 22px;
+    border: none;
+    cursor: pointer;
+}
+.dropbtn input {
+    width: calc(100% - 50px);
+    height: auto;
+    padding: 5px 5px;
+    background: transparent;
+    border: none;
+    color: white;
+    outline: none;
+}
+
+.dropbtn input::placeholder {
+    opacity: 1;
+    color: white;
+}
+.active .dropbtn input::placeholder {
+    color: white;
+    opacity: 0.5;
+}
+
+.dropDown--content {
+    position: absolute;
+    display: none;
+    left: 0;
+    width: 100%;
+    height: auto;
+    min-height: 10dvh;
+    max-height: 50dvh;
+    z-index: 1;
+}
+.dropDown--content.show {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: start;
+    gap: 1% 5px;
+    overflow-y: auto;
+    padding: 1rem;
+}
+.dropDown--item {
+    display: inline-block;
+    padding: 4px;
+    width: 32%;
+    color: white;
+}
+
+@media screen and (max-width: 992px) {
+    .card {
+        width: 48%;
+    }
+    .card_content .card_content_header_title {
+        font-size: clamp(12px, 2vw, 18px);
+    }
+    .card_content .card_content_body_liste {
+        font-size: clamp(10px, 1.2vw, 12px);
+    }
+    .card_content .card_content_body_instruction {
+        font-size: clamp(10px, 1.2vw, 12px);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .card {
+        width: 100%;
+    }
+    .card_content .card_content_header_title {
+        font-size: clamp(12px, 3vw, 18px);
+    }
+    .card_content .card_content_body_liste {
+        font-size: clamp(10px, 2.5vw, 12px);
+    }
+    .card_content .card_content_body_instruction {
+        font-size: clamp(10px, 2.5vw, 12px);
+    }
+}
+
+.show {
+    display: block;
+}
+
+.hide {
+    display: none;
+}
+
+.hidder {
+    display: none;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity: 0;
+    background: #0000;
+}
