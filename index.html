@@ -126,3 +126,152 @@
         <template> </template>
     </body>
 </html>
+
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Les petits plats</title>
+
+        <!--  Partie CSS  -->
+        <link rel="stylesheet" href="./style/index.css" />
+        <!--  Partie Font google  -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <!--    Partie JS   -->
+        <script defer src="./scripts/filter.js" type="module"></script>
+    </head>
+    <body>
+        <header>
+            <img
+                class="header_logo"
+                src="./assets/icons/logo.svg"
+                alt="Logo Les petits plats"
+            />
+            <h1 class="header_title">Les petits plats</h1>
+        </header>
+        <main>
+            <!--    Barre de recherche    -->
+            <div class="search_bar">
+                <label for="search">
+                    <input
+                        type="text"
+                        name="search"
+                        id="search"
+                        placeholder="Rechercher une recette"
+                    />
+                </label>
+                <div class="search_logo_container">
+                    <img
+                        src="./assets/icons/search.svg"
+                        class="search_logo"
+                        alt="Logo recherche"
+                    />
+                </div>
+            </div>
+            <!--    Section des tags        -->
+            <div class="tags"></div>
+
+            <!--    Select + recherche 3 catégories     -->
+            <div class="hidder"></div>
+            <div class="search_tags">
+                <div id="tagI" class="drop_list drop_list--I">
+                    <button id="tagI--title" class="dropbtn drop_list--I">
+                        <input
+                            type="text"
+                            placeholder="Ingrédients"
+                            id="input-I"
+                            value=""
+                        />
+                        <span id="tagDropI">
+                            <img
+                            src="./assets/icons/chevron.svg"
+                            class=""
+                            alt="Chevron"
+                        />
+                    </span>
+                    </button>
+                    <div
+                        id="dropDown-I"
+                        tabindex="0"
+                        class="dropDown--content drop_list--I"
+                    ></div>
+                </div>
+
+                <div id="tagA" class="drop_list drop_list--A">
+                    <button id="tagA--title" class="dropbtn drop_list--A">
+                        <input
+                            type="text"
+                            placeholder="Appareils"
+                            id="input-A"
+                            value=""
+                        />
+                        <span id="tagDropA">
+                            <img
+                            src="./assets/icons/chevron.svg"
+                            class=""
+                            alt="Chevron"
+                        />
+                        </span>
+                    </button>
+                    <div
+                        id="dropDown-A"
+                        tabindex="0"
+                        class="dropDown--content drop_list--A"
+                    ></div>
+                </div>
+
+                <div id="tagU" class="drop_list drop_list--U">
+                    <button id="tagU--title" class="dropbtn drop_list--U">
+                        <input
+                            type="text"
+                            placeholder="Ustensiles"
+                            id="input-U"
+                            value=""
+                        />
+                        <span id="tagDropU">
+                            <img
+                            src="./assets/icons/chevron.svg"
+                            class=""
+                            alt="Chevron"
+                        />
+                        </span>
+                    </button>
+                    <div
+                        id="dropDown-U"
+                        tabindex="0"
+                        class="dropDown--content drop_list--U"
+                    ></div>
+                </div>
+            </div>
+
+            <!--    Section Cards   -->
+            <div class="card_container"></div>
+        </main>
+        <!--Template Card-->
+        <template id="card_recipe">
+            <div class="card">
+                <div class="card_img"></div>
+                <div class="card_content">
+                    <div class="card_content_header">
+                        <p class="card_content_header_title"></p>
+                        <span class="card_content_header_time">
+                            <img
+                                src="./assets/icons/clock.svg"
+                                alt="Logo Horloge"
+                            />
+                            <p class="card_content_header_time_text"></p>
+                        </span>
+                    </div>
+                    <div class="card_content_body">
+                        <div class="card_content_body_liste"></div>
+                        <div class="card_content_body_instruction"></div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!--    template Tags   -->
+        <template> </template>
+    </body>
+</html>
