@@ -215,16 +215,17 @@ header {
 }
 
 .tags .tag {
+    display: flex ;
+    align-items: center;
+    min-width: 107px;
+    min-height: 40px;
     padding: 5px 2px 5px 10px;
-    border: 1px solid black;
+    /* border: 1px solid black; */
     color: white;
     border-radius: 5px;
 }
-.tags .tag::after {
-    content: "X";
-    border: 1px solid white;
+.tags .tag img {
     padding: 2px;
-    border-radius: 3px;
     margin-left: 10px;
 }
 /*  Section Dropdown Tags   */
@@ -241,9 +242,16 @@ header {
     position: relative;
     display: inline-block;
     width: 22%;
+    border-radius: 5px;
 }
 .drop_list.active {
     width: 52%;
+    border-radius: 5px 5px 0 0;
+}
+
+.drop_list.active .dropDown--content{
+    
+    border-radius:  0 0 5px 5px;
 }
 
 .drop_list--I {
@@ -255,9 +263,33 @@ header {
 .drop_list--A {
     background-color: #ed6454;
 }
+
+
+
+#tagI.active #tagDropI {
+    transition: transform 0.3s ease;
+    transform: rotate(-180deg); /* Rotation vers le haut si la classe "active" est présente */
+}
+
+
+#tagA.active #tagDropA {
+    transition: transform 0.3s ease;
+    transform: rotate(-180deg); /* Rotation vers le haut si la classe "active" est présente */
+}
+
+
+#tagU.active #tagDropU {
+    transition: transform 0.3s ease;
+    transform: rotate(-180deg); /* Rotation vers le haut si la classe "active" est présente */
+}
+
+
 /* Dropdown Button */
 .dropbtn {
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     color: white;
     padding: 16px;
     height: 70px;

@@ -35,7 +35,11 @@ const Factory = {
         text = text.toLowerCase();
         const tag = document.createElement("span");
         tag.textContent = text;
-
+        const img = document.createElement("img");
+        img.src = "/assets/icons/close.svg"
+        img.alt = text; // Ajoutez un texte alternatif pour l'accessibilité
+    
+        tag.appendChild(img); 
         tag.type = type;
         tag.name = text;
 
@@ -121,7 +125,7 @@ const Update = {
 
 export class Filter {
     constructor(originals) {
-        this.originals = [...originals];
+        this.originals = originals;
         this.filteredList = [];
 
         this.filterFunctions = new Map();
